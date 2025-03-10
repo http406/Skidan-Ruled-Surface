@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skidan Ruled Surface </title>
+    <style>
+        body { margin: 0; 
+        background-color: black; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh;
+        margin: 0; 
+        outline: none;
+        background: #000;
+        -webkit-tap-highlight-color: transparent;
+        }
+        canvas { display: block; }
+        #infoButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .info-popup {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: left;
+            user-select: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <button id="infoButton">&#9432;</button>
+    <div class="info-popup" id="infoPopup">
+        <p style="text-align:center;" ><strong>Skidan Ruled Surface</strong></p>
+    <p style="color:pink; text-align: center;">The Skidan Ruled Surface is a mathematical surface that exhibits beautiful geometric patterns, often resembling a flower-like structure. It belongs to the family of ruled surfaces, meaning that every point on the surface lies on a straight line (a ruling). The Skidan surface is particularly interesting due to its oscillatory behavior, which creates elegant petal-like structures.</p>
+            <p style="text-align:center;">For Equations visit my Github. Enjoy!</p>
+    </div>
+    <script>
+        let scene, camera, renderer;
+        let surface, stars;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z =  20;
+
+            // Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Create Skidan Ruled Surface
+            createSurface();
+
+            // Create stars
+            createStars();
+
+            // Animation loop
+            animate();
+        }
+
+        function createSurface() {
+            const geometry = new THREE.BufferGeometry();
+            const vertices = [];
+            const colors = [];
+            const indices = [];
+
+            const uSteps = 100;
+            const vSteps = 100;
+            const a = Math.PI / 4;
+            const h = 3;
+            const n = 6;
+
+            for (let i = 0; i <= uSteps; i++) {
+                const u = (i / uSteps) * 3 * Math.PI;
+                for (let j = 0; j <= vSteps; j++) {
+                    const v = (j / vSteps) * 2 * Math.PI;
+                    const b = h * Math.abs(Math.cos(n * v));
+                    const x = (u * Math.sin(a) + b * Math.cos(a)) * Math.cos(v);
+                    const y = (u * Math.sin(a) + b * Math.cos(a)) * Math.sin(v);
+                    const z = u * Math.cos(a) - b * Math.sin(a);
+                    vertices.push(x, y, z);
+
+                    // Rainbow gradient color effect
+                    const color = new THREE.Color();
+                    color.setHSL(j / vSteps, 1.0, 0.5);
+                    colors.push(color.r, color.g, color.b);
+                }
+            }
+
+            for (let i = 0; i < uSteps; i++) {
+                for (let j = 0; j < vSteps; j++) {
+                    const a = i * (vSteps + 1) + j;
+                    const b = a + vSteps + 1;
+                    const c = a + 1;
+                    const d = b + 1;
+                    indices.push(a, b, d);
+                    indices.push(a, d, c);
+                }
+            }
+
+            geometry.setIndex(indices);
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            // Material with rainbow colors and wireframe effect
+            const material = new THREE.MeshBasicMaterial({
+                vertexColors: true,
+                wireframe: true
+            });
+
+            surface = new THREE.Mesh(geometry, material);
+            scene.add(surface);
+        }
+
+        function createStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starVertices = [];
+            const starColors = [];
+            const numStars = 500;
+
+            for (let i = 0; i < numStars; i++) {
+                const x = (Math.random() - 0.5) * 100;
+                const y = (Math.random() - 0.5) * 100;
+                const z = (Math.random() - 0.5) * 100;
+                starVertices.push(x, y, z);
+
+                // Random color for each star
+                const color = new THREE.Color();
+                color.setHSL(Math.random(), 1.0, 0.8);
+                starColors.push(color.r, color.g, color.b);
+            }
+
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+
+            const starMaterial = new THREE.PointsMaterial({
+                size: 0.09,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the surface
+            surface.rotation.x += 0.009;
+            surface.rotation.y += 0.009;
+
+            // Twinkle effect: Randomly adjust star opacity and color
+            const starPositions = stars.geometry.attributes.position.array;
+            const starColors = stars.geometry.attributes.color.array;
+            for (let i = 0; i < starPositions.length; i += 3) {
+                const flicker = Math.sin(Date.now() * 0.001 + starPositions[i]) * 0.5 + 0.5;
+                starColors[i] = flicker;
+                starColors[i + 1] = flicker;
+                starColors[i + 2] = flicker;
+            }
+            stars.geometry.attributes.color.needsUpdate = true;
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = init;
+        
+        $("#infoButton").click(function() {
+            $("#infoPopup").fadeToggle();
+        });
+    </script>
+</body>
+  </html>
+  
