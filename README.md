@@ -12,25 +12,10 @@ It is used in **mathematical visualizations** and **generative art** because of 
 ---
 
 ### **Understanding the Equation**
+
 The equation defining the Skidan Ruled Surface is:
 
-\[
-\begin{cases}
-x = (u \sin(a) + b \cos(a)) \cos(v) \\
-y = (u \sin(a) + b \cos(a)) \sin(v) \\
-z = u \cos(a) - b \sin(a)
-\end{cases}
-\]
-
-with:
-
-\[
-0 \leq u \leq 4\pi, \quad 0 \leq v \leq 2\pi
-\]
-
-\[
-b = h | \cos(nv) |
-\]
+![Image](https://github.com/user-attachments/assets/f5de2ac6-d617-45ef-a426-38e9d57f382c)
 
 ---
 
