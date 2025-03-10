@@ -23,28 +23,31 @@ The equation defining the Skidan Ruled Surface is:
 Each equation defines one coordinate **(x, y, z)** in terms of the parameters **\( u \) and \( v \)**.
 
 #### **1. \( x \)-Coordinate:**
-\[
-x = (u \sin(a) + b \cos(a)) \cos(v)
-\]
+
+![Image](https://github.com/user-attachments/assets/b64e36b1-b0f0-45da-9a49-1673664047f7)
+
+
 - The term **\( u \sin(a) \)** controls how the surface expands outward.
 - The term **\( b \cos(a) \)** introduces oscillations that shape the **petals**.
 - Multiplication by **\( \cos(v) \)** ensures symmetry around the z-axis.
 
 #### **2. \( y \)-Coordinate:**
-\[
-y = (u \sin(a) + b \cos(a)) \sin(v)
-\]
+
+![Image](https://github.com/user-attachments/assets/378ec74f-fa3b-4784-9650-5942b39d90f1)
+
+
 - Similar to **\( x \)**, but with **\( \sin(v) \)** instead of **\( \cos(v) \)**.
 - This transformation ensures a **circular symmetry**, forming the overall flower-like shape.
 
 #### **3. \( z \)-Coordinate:**
-\[
-z = u \cos(a) - b \sin(a)
-\]
+
+![Image](https://github.com/user-attachments/assets/18664322-924c-45db-b0d4-bdebf7e7f710)
+
+
 - The term **\( u \cos(a) \)** determines the vertical height of the surface.
 - The term **\( - b \sin(a) \)** adds oscillatory variation to the height.
 
-#### **4. The Oscillation Factor \( b = h | \cos(nv) | \)**
+#### **4. The Oscillation Factor \( b = h | cos(nv) | \)**
 \[
 b = h | \cos(nv) |
 \]
